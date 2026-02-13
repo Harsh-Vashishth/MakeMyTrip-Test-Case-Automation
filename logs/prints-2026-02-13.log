@@ -1,0 +1,5 @@
+23:07:16.226 [main] TRACE org.apache.xmlbeans.impl.common.XBeanDebug - Resolving type for handle stxstringf179type
+23:07:16.235 [main] TRACE org.apache.xmlbeans.impl.common.XBeanDebug - Resolving type for handle stcelltypebf95type
+23:07:16.242 [main] INFO  stepdefinitions.ValidateTestAFlightSearchFilter - User landed on flight search page
+23:07:16.433 [main] INFO  stepdefinitions.ValidateTestAFlightSearchFilter - Selecting departure city...
+23:07:21.837 [main] INFO  stepdefinitions.ValidateTestAFlightSearchFilter - Departure selected: Pune

@@ -26,6 +26,6 @@ public class Base {
 
     public static void quitDriver() {
         if (driver != null)
-            driver.quit();
+           driver.quit();
     }
 }

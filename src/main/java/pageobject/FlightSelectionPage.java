@@ -11,13 +11,14 @@ public class FlightSelectionPage extends Base {
 
 	By fromCity = By.id("fromCity");
 	By toCity = By.id("toCity");
-	By frominputBox = By.xpath("//input[@placeholder='From']");
-	By toInputBox = By.xpath("//input[@placeholder='To']");
-	By searchBtn = By.xpath("//a[text()='Search']");
-	By flightsListPune = By.xpath("//div[contains(@class,'listingCard')]//font[text()='Pune']");
-	By flightsListChennai = By.xpath("//div[contains(@class,'listingCard')]//font[text()='Chennai']");
-	By datePicker = By.xpath("//div[contains(@class,'DayPicker-Day') and @aria-label='Wed Mar 11 2026']");
+	By frominputBox = By.id("fromCity");
+	By toInputBox = By.id("toCity");
+	By pricePicker = By.xpath(" //div[contains(@class,'DayPicker-Day')]//p[2][normalize-space()!='']");
+	By closeBtn =  By.cssSelector("span.commonModal__close");
 
+	public WebElement closePopUp() {
+		return driver.findElement(closeBtn);
+	}
     public WebElement fromCityField() {
         return driver.findElement(fromCity);
     }
@@ -34,22 +35,13 @@ public class FlightSelectionPage extends Base {
         return driver.findElement(toInputBox);
     }
     
-    public WebElement flightDate() {
-    	return driver.findElement(datePicker);
+    public List<WebElement> flightPrice() {
+    	return driver.findElements(pricePicker);
     }
 
-    public WebElement citySuggestion(String city) {
-        return driver.findElement(By.xpath("//p[contains(text(),'" + city + "')]"));
+    public WebElement citySuggestion() {
+        return driver.findElement(By.xpath("//div[contains(@class,'revampedSuggestionHeader')][1]"));
     }
 
-    public WebElement searchButton() {
-        return driver.findElement(searchBtn);
-    }
-    
-    public List<WebElement> flightsListPune(){
-    	return driver.findElements(flightsListPune);
-    }
-    public List<WebElement> flightsListChennai(){
-    	return driver.findElements(flightsListChennai);
-    }
+   
 }

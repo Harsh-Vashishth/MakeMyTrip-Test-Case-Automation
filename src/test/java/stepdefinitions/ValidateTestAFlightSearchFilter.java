@@ -1,16 +1,21 @@
 package stepdefinitions;
 
 import io.cucumber.java.en.*;
+import utils.ExcelUtils;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.*;
 import org.testng.Assert;
+
 import pageobject.FlightSelectionPage;
 import base.Base;
 
 import java.time.Duration;
-import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,145 +24,117 @@ public class ValidateTestAFlightSearchFilter extends Base {
 
     private static final Logger log = LogManager.getLogger(ValidateTestAFlightSearchFilter.class);
 
-    FlightSelectionPage page = new FlightSelectionPage();
-    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+    private FlightSelectionPage page;
+    private WebDriverWait wait;
+
+    private String fromCity;
+    private String toCity;
+
+    public ValidateTestAFlightSearchFilter() {
+
+        page = new FlightSelectionPage();
+        wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+
+        ExcelUtils excel = new ExcelUtils("MakeMyTrip.xlsx", "Sheet1");
+
+        Map<String, String> data = excel.getRowData(1);
+
+        fromCity = data.get("From");
+        toCity = data.get("To");
+    }
+
 
     @Given("the user is on the MakeMyTrip flight search page")
-    public void the_user_is_on_the_makemytrip_flight_search_page() {
+    public void the_user_is_on_the_MakeMyTrip_flight_search_page() {
 
         try {
-            log.info("User is on MakeMyTrip flight search page");
-            Thread.sleep(3000);
-            WebElement closeBtn = wait.until(
-                    ExpectedConditions.elementToBeClickable(By.cssSelector("span.commonModal__close"))
-                );
-            Thread.sleep(3000);
 
-                closeBtn.click();
-            
+            log.info("User landed on flight search page");
+
+            wait.until(ExpectedConditions.elementToBeClickable(page.closePopUp())).click();;
         }
 
         catch (Exception e) {
-            log.error("Failed in Given step: ", e);
+
+            log.error("Given step failed", e);
             Assert.fail("Given step failed");
         }
     }
 
-    @When("the user selects {string} as the departure city")
-    public void the_user_selects_as_the_departure_city(String city) {
+    @When("the user selects Pune as the departure city")
+    public void the_user_selects_Pune_as_the_departure_city() {
 
         try {
+
+            log.info("Selecting departure city...");
+
+            wait.until(ExpectedConditions.visibilityOf(page.fromCityField())).click();
+            
             Thread.sleep(3000);
+          
+            wait.until( ExpectedConditions.visibilityOf(page.fromInputBox())).sendKeys(fromCity);
+            System.out.println(fromCity+" entered");
 
-            wait.until(ExpectedConditions.elementToBeClickable(page.fromCityField())).click();
-            Thread.sleep(3000);
+            Thread.sleep(2000);
+            wait.until(ExpectedConditions.visibilityOf(page.citySuggestion())).click();
 
-            wait.until(ExpectedConditions.visibilityOf(page.fromInputBox())).sendKeys(city);
-            Thread.sleep(3000);
-
-            wait.until(ExpectedConditions.elementToBeClickable(page.citySuggestion(city))).click();
-
-            log.info("Departure city selected successfully");
+            log.info("Departure selected: " + fromCity);
         }
 
         catch (Exception e) {
-            log.error("Departure selection failed: ", e);
-            Assert.fail("Departure step failed");
+
+            log.error("Departure failed", e);
+            e.printStackTrace();
+            Assert.fail("Departure failed");
         }
     }
 
-    @When("selects {string} as the destination city")
-    public void selects_as_the_destination_city(String city) {
+
+
+    @When("selects Chennai as the destination city")
+    public void selects_Chennai_as_the_destination_city() {
 
         try {
-            Thread.sleep(3000);
+            log.info("Selecting destination city...");
 
-            wait.until(ExpectedConditions.elementToBeClickable(page.toCityField())).click();
+            wait.until(ExpectedConditions.visibilityOf(page.toCityField())).click();
             Thread.sleep(3000);
+            wait.until(ExpectedConditions.visibilityOf(page.toInputBox())).sendKeys(toCity);
+            System.out.println(toCity+" entered");
+            Thread.sleep(2000);
+            wait.until(ExpectedConditions.visibilityOf(page.citySuggestion())).click();
 
-            wait.until(ExpectedConditions.visibilityOf(page.toInputBox())).sendKeys(city);
-            Thread.sleep(3000);
-
-            wait.until(ExpectedConditions.elementToBeClickable(page.citySuggestion(city))).click();
-            
-            log.info("Destination city selected successfully");
+            log.info("Destination selected: " + toCity);
         }
 
         catch (Exception e) {
-            log.error("Destination selection failed: ", e);
-            Assert.fail("Destination step failed");
+
+            log.error("Destination selection failed", e);
+            Assert.fail("Destination failed");
         }
     }
     
-    @When("date is picked")
-    public void date_is_picked() {
+    @Then("cheapest flight in next 15 days is picked")
+    public void cheapest_flight_in_next_15_days_is_picked() {
     	try {
     		Thread.sleep(2000);
-    		wait.until(ExpectedConditions.elementToBeClickable(page.flightDate())).click();
+    		List<WebElement> prices = page.flightPrice();
+    		List<Integer> values = new ArrayList<>();
+    		
+    		for(int i = 0; i< 15; i++) {
+    			String text = prices.get(i).getText();
+    			String clean = text.replaceAll("[^0-9]", ""); //removed commas from prices using regex
+    			values.add(Integer.valueOf(clean));
+    		}
+    		
+    		Collections.sort(values);
+    		int cheapest = values.get(0);
+    		
+    		System.out.println("Cheapest flight: "+ cheapest);
     	}
-    	catch(Exception e) {
-    		log.error("Date selection failed: ", e);
-            Assert.fail("Date step failed");
+    	catch(Exception e){
+    		log.error("Cheapest Price Calculation failed",e);
+    		Assert.fail("Cheapest Price Calculation failed");
     	}
     }
-
-    @When("clicks on the search button")
-    public void clicks_on_the_search_button() {
-
-        try {
-
-            log.info("Clicking search button");
-            Thread.sleep(3000);
-
-            wait.until(ExpectedConditions.elementToBeClickable(page.searchButton())).click();
-            System.out.println(driver.getCurrentUrl());
-        }
-
-        catch (Exception e) {
-            log.error("Search click failed", e);
-            Assert.fail("Search click failed");
-        }
-    }
-
-    @Then("all listed flights should match the selected locations")
-    public void all_listed_flights_should_match_the_selected_locations() {
-
-        try {
-
-            log.info("Validating filtered flight results for Pune → Chennai");
-            wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div.listingCard")));
-            List<WebElement> departureLocation = page.flightsListPune();
-            List<WebElement> arrivalLocation = page.flightsListChennai();
-
-            
-            Assert.assertTrue(departureLocation.size() > 0 && arrivalLocation.size() > 0,"No flight results found!");
-
-            for (WebElement route : departureLocation) {
-
-                String routeText = route.getText();
-
-
-                Assert.assertTrue(
-                        routeText.contains("Pune"),"Invalid route found: " + routeText);
-            }
-            for (WebElement route : arrivalLocation) {
-
-                String routeText = route.getText();
-
-
-                Assert.assertTrue(
-                        routeText.contains("Chennai"),"Invalid route found: " + routeText);
-            }
-
-            log.info("All flights correctly filtered: Pune → Chennai");
-
-        }
-
-        catch (Exception e) {
-
-            log.error("Flight validation failed: ", e);
-            Assert.fail("Validation failed");
-        }
-    }
-
 }

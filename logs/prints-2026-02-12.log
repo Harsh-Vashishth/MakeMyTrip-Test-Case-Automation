@@ -1,5 +1,5 @@
-00:28:24.331 [main] INFO  stepdefinitions.ValidateTestAFlightSearchFilter - User is on MakeMyTrip flight search page
-00:28:39.911 [main] INFO  stepdefinitions.ValidateTestAFlightSearchFilter - Departure city selected successfully
-00:28:49.290 [main] INFO  stepdefinitions.ValidateTestAFlightSearchFilter - Destination city selected successfully
-00:28:51.416 [main] INFO  stepdefinitions.ValidateTestAFlightSearchFilter - Clicking search button
-00:28:54.675 [main] INFO  stepdefinitions.ValidateTestAFlightSearchFilter - Validating filtered flight results for Pune → Chennai
+00:44:55.930 [main] INFO  stepdefinitions.ValidateTestAFlightSearchFilter - User is on MakeMyTrip flight search page
+00:45:11.472 [main] INFO  stepdefinitions.ValidateTestAFlightSearchFilter - Departure city selected successfully
+00:45:20.808 [main] INFO  stepdefinitions.ValidateTestAFlightSearchFilter - Destination city selected successfully
+00:45:22.947 [main] INFO  stepdefinitions.ValidateTestAFlightSearchFilter - Clicking search button
+00:45:26.193 [main] INFO  stepdefinitions.ValidateTestAFlightSearchFilter - Validating filtered flight results for Pune → Chennai
